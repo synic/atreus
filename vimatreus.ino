@@ -18,7 +18,7 @@
  */
 
 #ifndef BUILD_INFORMATION
-#define BUILD_INFORMATION "synic'''vim"
+#define BUILD_INFORMATION "synic's vim firmware"
 #endif
 
 #include "Kaleidoscope.h"
