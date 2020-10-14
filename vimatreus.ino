@@ -36,6 +36,16 @@ enum {
   MACRO_VIM_SAVE,
 };
 
+enum {
+  QWERTY,
+  FUN,
+  UPPER,
+};
+
+enum {
+  TD_FUN,
+};
+
 #define Key_Exclamation LSHIFT(Key_1)
 #define Key_At LSHIFT(Key_2)
 #define Key_Hash LSHIFT(Key_3)
@@ -47,11 +57,7 @@ enum {
 #define Key_Plus LSHIFT(Key_Equals)
 #define Key_Colon LSHIFT(Key_Semicolon)
 
-enum {
-  QWERTY,
-  FUN,
-  UPPER
-};
+
 
 /* *INDENT-OFF* */
 KEYMAPS(
@@ -65,7 +71,7 @@ KEYMAPS(
                      ,Key_Y     ,Key_U      ,Key_I     ,Key_O      ,Key_P
                      ,Key_H     ,Key_J      ,Key_K     ,Key_L      ,Key_Semicolon
        ,Key_Backslash,Key_N     ,Key_M      ,Key_Comma ,Key_Period ,Key_Slash
-       ,Key_LeftAlt  ,Key_Space ,TD(0)    ,Key_Minus ,Key_Quote  ,Key_Enter
+       ,Key_Equals  ,Key_Space ,TD(TD_FUN)    ,Key_Minus ,Key_Quote  ,Key_Enter
   ),
 
   [FUN] = KEYMAP_STACKED
@@ -112,10 +118,8 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     break;
   case MACRO_VIM_ESCAPE:
     return MACRODOWN(I(25), T(Esc), I(25), T(Esc));
-    break;
   case MACRO_VIM_SAVE:
     return MACRODOWN(I(25), T(Esc), I(25), T(Esc), T(Colon), T(W), T(Enter));
-    break;
   default:
     break;
   }
@@ -125,7 +129,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
 void tapDanceAction(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count, kaleidoscope::plugin::TapDance::ActionType tap_dance_action) {
   switch (tap_dance_index) {
-  case 0:
+  case TD_FUN:
     return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_VIM_ESCAPE), M(MACRO_VIM_SAVE));
   }
 }
@@ -133,7 +137,10 @@ void tapDanceAction(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count
 void setup() {
   QUKEYS(
     kaleidoscope::plugin::Qukey(0, KeyAddr(3, 8), ShiftToLayer(FUN)),
+    kaleidoscope::plugin::Qukey(0, KeyAddr(3, 6), Key_LeftAlt),
   )
+  Qukeys.setOverlapThreshold(85);
+  Qukeys.setMinimumHoldTime(20);
   Kaleidoscope.setup();
 }
 
