@@ -26,14 +26,11 @@
 #include "Kaleidoscope-Qukeys.h"
 #include "Kaleidoscope-TapDance.h"
 
-
-#define MO(n) ShiftToLayer(n)
-#define TG(n) LockLayer(n)
-
 enum {
   MACRO_VERSION_INFO,
   MACRO_VIM_ESCAPE,
   MACRO_VIM_SAVE,
+  MACRO_UNIX_TILDE,
 };
 
 enum {
@@ -44,6 +41,7 @@ enum {
 
 enum {
   TD_FUN,
+  TD_ALT,
 };
 
 #define Key_Exclamation LSHIFT(Key_1)
@@ -56,14 +54,14 @@ enum {
 #define Key_Star LSHIFT(Key_8)
 #define Key_Plus LSHIFT(Key_Equals)
 #define Key_Colon LSHIFT(Key_Semicolon)
-
+#define Key_Tilde LSHIFT(Key_Backtick)
 
 
 /* *INDENT-OFF* */
 KEYMAPS(
   [QWERTY] = KEYMAP_STACKED
   (
-       Key_Q   ,Key_W   ,Key_E       ,Key_R         ,Key_T
+       Key_Q            ,Key_W   ,Key_E       ,Key_R         ,Key_T
       ,Key_A   ,Key_S   ,Key_D       ,Key_F         ,Key_G
       ,Key_Z   ,Key_X   ,Key_C       ,Key_V         ,Key_B, Key_Backtick
       ,Key_Esc ,Key_Tab ,Key_LeftGui ,Key_LeftShift ,Key_Backspace ,Key_LeftControl
@@ -71,7 +69,7 @@ KEYMAPS(
                      ,Key_Y     ,Key_U      ,Key_I     ,Key_O      ,Key_P
                      ,Key_H     ,Key_J      ,Key_K     ,Key_L      ,Key_Semicolon
        ,Key_Backslash,Key_N     ,Key_M      ,Key_Comma ,Key_Period ,Key_Slash
-       ,Key_Equals  ,Key_Space ,TD(TD_FUN)    ,Key_Minus ,Key_Quote  ,Key_Enter
+       ,TD(TD_ALT)   ,Key_Space ,TD(TD_FUN)    ,Key_Minus ,Key_Quote  ,Key_Enter
   ),
 
   [FUN] = KEYMAP_STACKED
@@ -79,12 +77,12 @@ KEYMAPS(
        Key_Exclamation ,Key_At           ,Key_UpArrow   ,Key_Dollar           ,Key_Percent
       ,Key_LeftParen   ,Key_LeftArrow    ,Key_DownArrow ,Key_RightArrow       ,Key_RightParen
       ,Key_LeftBracket ,Key_RightBracket ,Key_Hash      ,Key_LeftCurlyBracket ,Key_RightCurlyBracket ,Key_Caret
-      ,TG(UPPER)       ,Key_Insert       ,Key_LeftGui   ,Key_LeftShift        ,Key_Delete         ,Key_LeftControl
+      ,LockLayer(UPPER),Key_Insert       ,Key_LeftGui   ,Key_LeftShift        ,Key_Delete            ,Key_LeftControl
 
-                   ,Key_PageUp   ,Key_7 ,Key_8      ,Key_9 ,Key_Home
-                   ,Key_PageDown ,Key_4 ,Key_5      ,Key_6 ,Key_End
-      ,Key_And     ,Key_Star     ,Key_1 ,Key_2      ,Key_3 ,Key_Plus
-      ,Key_LeftAlt ,Key_Space    ,___   ,Key_Period ,Key_0 ,Key_Equals
+                       ,Key_PageUp       ,Key_7 ,Key_8      ,Key_9 ,Key_Home
+                       ,Key_PageDown ,Key_4 ,Key_5      ,Key_6 ,Key_End
+      ,Key_And         ,Key_Star     ,Key_1 ,Key_2      ,Key_3 ,Key_Plus
+      ,Key_LeftAlt     ,Key_Space    ,___   ,Key_Period ,Key_0 ,Key_Equals
    ),
 
   [UPPER] = KEYMAP_STACKED
@@ -94,7 +92,7 @@ KEYMAPS(
       ,M(MACRO_VERSION_INFO) ,Consumer_VolumeIncrement ,XXX           ,XXX            ,___ ,___
       ,MoveToLayer(QWERTY)   ,Consumer_VolumeDecrement ,___           ,___            ,___ ,___
 
-                ,Key_UpArrow   ,Key_F7              ,Key_F8          ,Key_F9         ,Key_F10
+                             ,Key_UpArrow   ,Key_F7              ,Key_F8          ,Key_F9         ,Key_F10
                 ,Key_DownArrow ,Key_F4              ,Key_F5          ,Key_F6         ,Key_F11
       ,___      ,XXX           ,Key_F1              ,Key_F2          ,Key_F3         ,Key_F12
       ,___      ,___           ,MoveToLayer(QWERTY) ,Key_PrintScreen ,Key_ScrollLock ,Consumer_PlaySlashPause
@@ -120,6 +118,8 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     return MACRODOWN(I(25), T(Esc), I(25), T(Esc));
   case MACRO_VIM_SAVE:
     return MACRODOWN(I(25), T(Esc), I(25), T(Esc), T(Colon), T(W), T(Enter));
+  case MACRO_UNIX_TILDE:
+    return MACRODOWN(I(25), T(Tilde), T(Slash));
   default:
     break;
   }
@@ -131,6 +131,8 @@ void tapDanceAction(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count
   switch (tap_dance_index) {
   case TD_FUN:
     return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_VIM_ESCAPE), M(MACRO_VIM_SAVE));
+  case TD_ALT:
+    return tapDanceActionKeys(tap_count, tap_dance_action, Key_Equals, M(MACRO_UNIX_TILDE));
   }
 }
 
@@ -139,8 +141,8 @@ void setup() {
     kaleidoscope::plugin::Qukey(0, KeyAddr(3, 8), ShiftToLayer(FUN)),
     kaleidoscope::plugin::Qukey(0, KeyAddr(3, 6), Key_LeftAlt),
   )
-  Qukeys.setOverlapThreshold(85);
-  Qukeys.setMinimumHoldTime(20);
+  Qukeys.setOverlapThreshold(40);
+  Qukeys.setMinimumHoldTime(15);
   Kaleidoscope.setup();
 }
 
