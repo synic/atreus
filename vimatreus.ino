@@ -30,7 +30,6 @@ enum {
   MACRO_VERSION_INFO,
   MACRO_VIM_ESCAPE,
   MACRO_VIM_SAVE,
-  MACRO_UNIX_TILDE,
 };
 
 enum {
@@ -117,8 +116,6 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     return MACRODOWN(I(30), T(Esc), I(25), T(Esc));
   case MACRO_VIM_SAVE:
     return MACRODOWN(I(30), T(Esc), I(50), T(Esc), T(Colon), T(W), T(Enter));
-  case MACRO_UNIX_TILDE:
-    return MACRODOWN(I(25), T(Tilde), T(Slash));
   default:
     break;
   }
