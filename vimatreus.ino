@@ -41,7 +41,6 @@ enum {
 
 enum {
   TD_FUN,
-  TD_ALT,
 };
 
 #define Key_Exclamation LSHIFT(Key_1)
@@ -69,7 +68,7 @@ KEYMAPS(
                                 ,Key_Y                    ,Key_U                    ,Key_I                    ,Key_O                    ,Key_P
                                 ,Key_H                    ,Key_J                    ,Key_K                    ,Key_L                    ,Key_Semicolon
       ,Key_Backslash            ,Key_N                    ,Key_M                    ,Key_Comma                ,Key_Period               ,Key_Slash
-      ,TD(TD_ALT)               ,Key_Space                ,TD(TD_FUN)               ,Key_Minus                ,Key_Quote                ,Key_Enter
+      ,Key_Equals               ,Key_Space                ,TD(TD_FUN)               ,Key_Minus                ,Key_Quote                ,Key_Enter
   ),
 
   [FUN] = KEYMAP_STACKED
@@ -131,8 +130,6 @@ void tapDanceAction(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count
   switch (tap_dance_index) {
   case TD_FUN:
     return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_VIM_ESCAPE), M(MACRO_VIM_SAVE));
-  case TD_ALT:
-    return tapDanceActionKeys(tap_count, tap_dance_action, Key_Equals, M(MACRO_UNIX_TILDE));
   }
 }
 
