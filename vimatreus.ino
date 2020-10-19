@@ -1,21 +1,21 @@
 /* -*- mode: c++ -*-
- * Atreus -- Chrysalis-enabled Sketch for the Keyboardio Atreus
- * Copyright (C) 2018, 2019  Keyboard.io, Inc
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+   Atreus -- Chrysalis-enabled Sketch for the Keyboardio Atreus
+   Copyright (C) 2018, 2019  Keyboard.io, Inc
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
 
 #ifndef BUILD_INFORMATION
 #define BUILD_INFORMATION "synic's vim firmware"
@@ -87,8 +87,8 @@ KEYMAPS(
   (
        Key_Insert               ,Key_Home                 ,Key_UpArrow              ,Key_End                  ,Key_PageUp
       ,Key_Delete               ,Key_LeftArrow            ,Key_DownArrow            ,Key_RightArrow           ,Key_PageDown
-      ,M(MACRO_VERSION_INFO)    ,Consumer_VolumeIncrement ,XXX                      ,XXX                      ,___                      ,___
-      ,MoveToLayer(QWERTY)      ,Consumer_VolumeDecrement ,___                      ,___                      ,___                      ,___
+      ,M(MACRO_VERSION_INFO)    ,Consumer_VolumeIncrement ,Consumer_Mute            ,XXX                       ,___                      ,___
+      ,MoveToLayer(QWERTY)      ,Consumer_VolumeDecrement ,___                      ,___                       ,___                      ,___
 
                                 ,Key_UpArrow              ,Key_F7                   ,Key_F8                   ,Key_F9                   ,Key_F10
                                 ,Key_DownArrow            ,Key_F4                   ,Key_F5                   ,Key_F6                   ,Key_F11
@@ -106,27 +106,34 @@ KALEIDOSCOPE_INIT_PLUGINS(
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
-  case MACRO_VERSION_INFO:
-    if (keyToggledOn(keyState)) {
-      Macros.type(PSTR("Keyboardio Atreus - Kaleidoscope "));
-      Macros.type(PSTR(BUILD_INFORMATION));
-    }
-    break;
-  case MACRO_VIM_ESCAPE:
-    return MACRODOWN(I(30), T(Esc), I(25), T(Esc));
-  case MACRO_VIM_SAVE:
-    return MACRODOWN(I(30), T(Esc), I(50), T(Esc), T(Colon), T(W), T(Enter));
-  default:
-    break;
+    case MACRO_VERSION_INFO:
+      if (keyToggledOn(keyState)) {
+        Macros.type(PSTR("Keyboardio Atreus - Kaleidoscope "));
+        Macros.type(PSTR(BUILD_INFORMATION));
+      }
+      break;
+    case MACRO_VIM_ESCAPE:
+      return MACRODOWN(I(30), T(Esc), I(25), T(Esc));
+    case MACRO_VIM_SAVE:
+      return MACRODOWN(I(30), T(Esc), I(50), T(Esc), T(Colon), T(W), T(Enter));
+    default:
+      break;
   }
 
   return MACRO_NONE;
 }
 
-void tapDanceAction(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count, kaleidoscope::plugin::TapDance::ActionType tap_dance_action) {
-  switch (tap_dance_index) {
-  case TD_FUN:
-    return tapDanceActionKeys(tap_count, tap_dance_action, M(MACRO_VIM_ESCAPE), M(MACRO_VIM_SAVE));
+void tapDanceAction(
+       uint8_t tapDanceIndex, 
+       KeyAddr keyAddr, 
+       uint8_t tapCount, 
+       kaleidoscope::plugin::TapDance::ActionType tapDanceActionType)
+{
+  switch (tapDanceIndex) {
+    case TD_FUN:
+      return tapDanceActionKeys(
+        tapCount, tapDanceActionType, M(MACRO_VIM_ESCAPE), M(MACRO_VIM_SAVE),
+      );
   }
 }
 
